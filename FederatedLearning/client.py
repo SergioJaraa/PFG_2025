@@ -9,8 +9,14 @@ import os
 from model import Net  
 
 # CLIENTS ROUTE
-CLIENT_ID = ["client1", "client2", "client3"]
-DATA_PATH = f"./data/{CLIENT_ID}"
+# Get client ID from environment variable
+client_id = os.environ.get("CLIENT_ID", "client1")
+DATA_PATH = f"./data/{client_id}"
+
+# Remove hidden files like .DS_Store from classes list
+classes = [cls for cls in os.listdir(DATA_PATH) if os.path.isdir(os.path.join(DATA_PATH, cls)) and not cls.startswith('.')]
+
+
 
 transform = transforms.Compose([
     transforms.Grayscale(),                  # grayscale
