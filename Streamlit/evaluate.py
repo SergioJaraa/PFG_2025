@@ -21,12 +21,19 @@ def preprocess_image(image):
 # Load model
 @torch.no_grad()
 def load_model():
+    model_path = "federated_model3.pth"
+    hf_url = "https://huggingface.co/SergioJaraa/federated_model3/resolve/main/federated_model3.pth"
+
+    # Descargar solo si no existe localmente
+    if not os.path.exists(model_path):
+        try:
+            print("Downloading model weights from Hugging Face...")
+            urllib.request.urlretrieve(hf_url, model_path)
+        except Exception as e:
+            raise RuntimeError(f"❌ Error downloading model: {e}")
+
     model = Net(num_classes=4)
-    model.load_state_dict(torch.load(
-        "./federated_model3.pth", 
-        map_location=torch.device("cpu")
-    ))
-    model.eval()
+    model.load_state_dict(torch.load(model_path, map_location=torch.device("cpu")))
     return model
 
 # Classify image
