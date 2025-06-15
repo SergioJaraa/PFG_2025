@@ -23,7 +23,7 @@ def preprocess_image(image):
 def load_model():
     model = Net(num_classes=4)
     model.load_state_dict(torch.load(
-        "../FederatedLearning/FL_Models/federated_model3.pth", 
+        "./federated_model3.pth", 
         map_location=torch.device("cpu")
     ))
     model.eval()
