@@ -1,4 +1,6 @@
 # evaluate.py
+import os
+import urllib.request
 import torch
 from torchvision import transforms
 from PIL import Image
