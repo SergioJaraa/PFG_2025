@@ -7,6 +7,8 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import os
 from model import Net  
+from torch.optim.lr_scheduler import StepLR
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 # CLIENTS ROUTE
 # Get client ID from environment variable
