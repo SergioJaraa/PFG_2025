@@ -36,6 +36,7 @@ if "classified_once" not in st.session_state:
 # Page setup
 st.set_page_config(page_title="Brain Tumor Classifier", layout="wide")
 
+
 # CSS styles
 st.markdown("""
    <style>
@@ -110,7 +111,7 @@ st.markdown("""
             border: 1px solid #58a6ff;
             padding: 0.7em 1.5em;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 1.9rem;
             font-weight: 500;
             transition: all 0.3s ease-in-out;
             display: flex;
@@ -131,6 +132,7 @@ st.markdown("""
             display: block;
             margin: 0 auto;
             width: auto !important;
+            font-size: 1.9rem;
         }
 
         section[data-testid="stFileUploader"] {
@@ -212,6 +214,8 @@ st.markdown("""
             border: 2px solid #2d333b !important;
             border-radius: 10px;
             transition: border-color 0.3s ease;
+            padding: 20px;
+            font-size: 3rem;
         }
 
         .st-expander:hover {
