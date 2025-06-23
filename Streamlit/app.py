@@ -38,12 +38,15 @@ st.set_page_config(page_title="Brain Tumor Classifier", layout="wide")
 
 # CSS styles
 st.markdown("""
-    <style>
+   <style>
         html, body, [class*="css"] {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
             background-color: #0d1117;
             color: #d1d5db;
+            margin: 0;
+            padding: 0;
         }
+
 
         .main > div:first-child {
             padding-top: 2rem;
@@ -55,100 +58,166 @@ st.markdown("""
             margin-bottom: 30px;
             font-weight: 300;
             text-align: center;
-            color: #f1faee;
+            color: #e0e7ff;
             font-family: 'Courier New', Courier, monospace;
+            background: linear-gradient(90deg, #58a6ff, #d1d5db);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             padding: 10px;
+            border-radius: 8px;
+        }
+
+        .section-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100%;
+            padding-bottom: 20px;
         }
 
         .section-title {
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 600;
+            color: #58a6ff;
             text-align: center;
-            font-size: 36px;
-            font-weight: bold;
-            color: #f1faee;
-            margin-top: 20px;
-            margin-bottom: 15px;
             font-family: 'Courier New', Courier, monospace;
-            padding: 5px;
-            padding-bottom: 10px;
-            padding-top: 10px;
-            margin-left: 10px;
+            
         }
+
+        .section-text {
+            margin-top: 0;
+            font-size: 26px;
+            text-align: center;
+        }
+
 
         .block-container {
-            padding: 5rem;
+            padding: 2rem 2rem;
+            max-width: 2200px;
+            margin: 0 auto;
         }
 
-        /* All buttons */
         button {
-            background-color: #30363d;
-            color: #f0f6fc;
+            background-color: #1f2a44;
+            color: #e0e7ff;
             border: 1px solid #58a6ff;
-            padding: 0.5em 1.1em;
-            border-radius: 8px;
-            font-size: 1.05rem;
+            padding: 0.7em 1.5em;
+            border-radius: 10px;
+            font-size: 1.1rem;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease-in-out;
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
+            box-shadow: 0 4px 6px rgba(88, 166, 255, 0.1);
         }
 
         button:hover {
             background-color: #58a6ff;
-            color: #0d1117;
-            transform: scale(1.03);
-            cursor: pointer;
+            color: #e0e7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(88, 166, 255, 0.2);
+        }
+        .stButton > button {
+            display: block;
+            margin: 0 auto;
+            width: auto !important;  /* O usa un % fijo si lo prefieres */
         }
 
-        /* File uploader */
         section[data-testid="stFileUploader"] {
             background-color: #161b22;
-            border: 1px solid #30363d;
-            padding: 1em;
-            border-radius: 10px;
+            border: 2px solid #2d333b;
+            padding: 1.5em;
+            border-radius: 12px;
+            transition: border-color 0.3s ease;
+        }
+        div[data-testid="column"] {
+            vertical-align: top;
+            display: inline-block;
         }
 
-        /* Selectbox dropdown */
+        section[data-testid="stFileUploader"]:hover {
+            border-color: #58a6ff;
+        }
+
         div[data-baseweb="select"] {
             background-color: #161b22 !important;
             border-radius: 8px;
-            border: 1px solid #30363d;
+            border: 2px solid #2d333b;
+            transition: border-color 0.3s ease;
+        }
+
+        div[data-baseweb="select"]:hover {
+            border-color: #58a6ff;
         }
 
         div[data-baseweb="select"] > div {
-            color: #f0f6fc;
+            color: #e0e7ff;
         }
 
-        /* Text area */
         textarea {
             background-color: #161b22 !important;
-            color: #f0f6fc !important;
-            border-radius: 6px !important;
-            border: 1px solid #30363d !important;
+            color: #e0e7ff !important;
+            border-radius: 8px !important;
+            border: 2px solid #2d333b !important;
+            padding: 0.8em;
+            transition: border-color 0.3s ease;
         }
 
-        /* Result prediction box */
+        textarea:focus {
+            border-color: #58a6ff !important;
+            outline: none;
+        }
+
         .result {
             background-color: #1c2128;
-            border: 1px solid #58a6ff;
-            padding: 14px;
-            border-radius: 10px;
+            border: 2px solid #58a6ff;
+            padding: 1.5em;
+            border-radius: 12px;
             text-align: center;
-            color: #f1faee;
+            color: #e0e7ff;
             font-size: 24px;
             margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.1);
         }
 
-        /* Radio buttons alignment */
         .stRadio > div {
             justify-content: center;
+            gap: 1.5em;
         }
 
-        /* Expander box */
         .st-expander {
             background-color: #161b22 !important;
-            border: 1px solid #30363d !important;
+            border: 2px solid #2d333b !important;
+            border-radius: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .st-expander:hover {
+            border-color: #58a6ff !important;
+        }
+
+        .stDownloadButton {
+            margin-top: 1em;
+        }
+        div[data-testid="column"] {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;  /* <--- CAMBIO CLAVE */
+            padding-bottom: 50px;
+            padding-top: 50px;
+            background-color: #161b22;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(88, 166, 255, 0.1);
+            transition: transform 0.3s ease;
+            padding-right: 50px;
+            padding-left: 50px;
+            margin-top: 20px;
         }
     </style>
 """, unsafe_allow_html=True)    
@@ -173,12 +242,20 @@ class_info = {
 }
 
 # Layout
-col1, _, col2 = st.columns([1, 0.1, 1])
+col1, col2 = st.columns([1.5, 1.5])
 
 # Classify section
 with col1:
-    st.markdown("<div class='section-title'>🔬 Classify Tumor Image</div>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center; font-size: 26px;'>Test your knowledge trying to guess the tumor and check with the Federated Learning CNN Model trained by three clients</p>", unsafe_allow_html=True)
+    st.markdown("""
+        <div class="section-wrapper">
+            <div class='section-title'>🔬 Classify Tumor Image</div>
+            <div class='section-text'>
+                Test your knowledge trying to guess the tumor and check with the Federated Learning CNN Model trained by three clients
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<div style='font-size: 28px; text-align:center; margin-bottom: 10px; padding-top: 20px'>Upload image of MRI brain tumor</div>", unsafe_allow_html=True)
 
     with st.container(border=True):
         uploaded_file = st.file_uploader("Upload brain MRI", type=["jpg", "png", "jpeg"], label_visibility="collapsed", key=f"file_uploader_{st.session_state.uploader_key}")
@@ -269,8 +346,16 @@ with col1:
 
 # GAN section
 with col2:
-    st.markdown("<div class='section-title'>🧬 Synthetic MRI Generation</div>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center; font-size: 26px;'>Generate a synthetic MRI image based on tumor type using StyleGAN2</p>", unsafe_allow_html=True)
+    st.markdown("""
+        <div class="section-wrapper">
+            <div class='section-title'>🧬 Synthetic MRI Generation</div>
+            <div class='section-text'>
+                Generate a synthetic MRI image based on tumor type using StyleGAN2-ADA-pytorch fine tuned models 
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+
 
     # Device configuration (CPU or CUDA)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -311,7 +396,10 @@ with col2:
     models = load_model_paths()
 
 
-    model_name = st.selectbox("Select model to generate image", list(models.keys()))
+    st.markdown("<div style='font-size: 28px; text-align:center; margin-bottom: 10px; padding-top: 20px'>Select model to generate image</div>", unsafe_allow_html=True)
+
+    # Selectbox sin label visible
+    model_name = st.selectbox("", list(models.keys()))
 
     if st.button("🎲 Generate Image"):
         with st.spinner("Generating image..."):
