@@ -8,7 +8,11 @@ import numpy as np
 from evaluate import load_model, preprocess_image, classify_image
 import torch.nn.functional as F
 import pandas as pd
+from huggingface_hub import hf_hub_download
 import urllib.request
+import sys
+
+sys.path.append("D:/PFG/PFG_2025/Streamlit/stylegan2-ada-pytorch")
 
 # Debug: Print current working directory
 print("Current working directory:", os.getcwd())
@@ -35,36 +39,119 @@ st.set_page_config(page_title="Brain Tumor Classifier", layout="wide")
 # CSS styles
 st.markdown("""
     <style>
-        .main > div:first-child { padding-top: 0rem; }
+        html, body, [class*="css"] {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #0d1117;
+            color: #d1d5db;
+        }
+
+        .main > div:first-child {
+            padding-top: 2rem;
+        }
+
         .title {
-            margin-top: 30px; padding-top: 0px; font-size: 44px;
-            margin-bottom: 40px; font-weight: 300; text-align: center;
-            color: #f1faee; font-family: 'Courier New', Courier, monospace;
+            margin-top: 20px;
+            font-size: 48px;
+            margin-bottom: 30px;
+            font-weight: 300;
+            text-align: center;
+            color: #f1faee;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 10px;
         }
-        .block-container { padding-top: 0rem; }
+
         .section-title {
-            text-align: center; font-size: 42px;
-            font-weight: 600; color: #dddddd; margin-bottom: 15px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #f1faee;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 5px;
+            padding-bottom: 10px;
+            padding-top: 10px;
+            margin-left: 10px;
         }
-        div.stButton {
-            display: flex; justify-content: center; gap: 10px;
-            background-color: #8799A2; margin-top: 20px;
-            padding: 10px; border-radius: 10px; width: 100%;
+
+        .block-container {
+            padding: 5rem;
         }
+
+        /* All buttons */
+        button {
+            background-color: #30363d;
+            color: #f0f6fc;
+            border: 1px solid #58a6ff;
+            padding: 0.5em 1.1em;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #58a6ff;
+            color: #0d1117;
+            transform: scale(1.03);
+            cursor: pointer;
+        }
+
+        /* File uploader */
+        section[data-testid="stFileUploader"] {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            padding: 1em;
+            border-radius: 10px;
+        }
+
+        /* Selectbox dropdown */
+        div[data-baseweb="select"] {
+            background-color: #161b22 !important;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+        }
+
+        div[data-baseweb="select"] > div {
+            color: #f0f6fc;
+        }
+
+        /* Text area */
+        textarea {
+            background-color: #161b22 !important;
+            color: #f0f6fc !important;
+            border-radius: 6px !important;
+            border: 1px solid #30363d !important;
+        }
+
+        /* Result prediction box */
         .result {
-            background-color: #8799A2; padding: 12px; border-radius: 10px;
-            text-align: center; color: #f1faee; font-size: 22px; margin-top: 20px;
+            background-color: #1c2128;
+            border: 1px solid #58a6ff;
+            padding: 14px;
+            border-radius: 10px;
+            text-align: center;
+            color: #f1faee;
+            font-size: 24px;
+            margin-top: 20px;
         }
-        .stMarkdown, .stRadio, .stInfo, .stTextArea, .stWrite, .stCaption, .stSubheader, .stSelectbox {
-            font-size: 20px !important;
+
+        /* Radio buttons alignment */
+        .stRadio > div {
+            justify-content: center;
         }
-        div.stDownloadButton {
-            display: flex; justify-content: center; gap: 10px;
-            background-color: #8799A2; margin-top: 20px;
-            padding: 10px; border-radius: 10px; width: 100%;
+
+        /* Expander box */
+        .st-expander {
+            background-color: #161b22 !important;
+            border: 1px solid #30363d !important;
         }
     </style>
-""", unsafe_allow_html=True)
+""", unsafe_allow_html=True)    
 
 # Title
 st.markdown("<div class='title'>🧠 Brain Tumor Research Interface</div>", unsafe_allow_html=True)
@@ -86,7 +173,7 @@ class_info = {
 }
 
 # Layout
-col1, col2 = st.columns(2)
+col1, _, col2 = st.columns([1, 0.1, 1])
 
 # Classify section
 with col1:
@@ -182,51 +269,69 @@ with col1:
 
 # GAN section
 with col2:
-    st.markdown("<div class='section-title'>Generate with GAN</div>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center; font-size: 26px;'>This feature will be available soon.</p>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>🧬 Synthetic MRI Generation</div>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; font-size: 26px;'>Generate a synthetic MRI image based on tumor type using StyleGAN2</p>", unsafe_allow_html=True)
+
+    # Device configuration (CPU or CUDA)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     @st.cache_resource
     def load_stylegan_model_local(local_path):
-        # Debug: Check if file exists and is readable
-        print("Checking path:", local_path)
-        print("File exists:", os.path.exists(local_path))
-        print("File readable:", os.access(local_path, os.R_OK))
         with open(local_path, "rb") as f:
-            G = pickle.load(f)['G_ema'].cuda()
+            G = pickle.load(f)['G_ema'].to(device)
         return G
 
     def generate_image(G):
-        z = torch.randn([1, G.z_dim]).cuda()
-        label = torch.zeros([1, G.c_dim]).cuda()
+        z = torch.randn([1, G.z_dim]).to(device)
+        label = torch.zeros([1, G.c_dim]).to(device)
         img = G(z, label, truncation_psi=0.5, noise_mode='const')[0]
         img = (img.permute(1, 2, 0).cpu().numpy() * 127.5 + 127.5).clip(0, 255).astype(np.uint8)
         return Image.fromarray(img)
 
-    # Define models from the repo
-    models = {
-        "Glioma": "/Users/sergio/MacBook-Air-de-Sergio/MRI_Tumor_StyleGAN2/glioma_model.pkl",
-        "Meningioma": "/Users/sergio/MacBook-Air-de-Sergio/MRI_Tumor_StyleGAN2/meningioma_model.pkl",
-        "Pituitary": "/Users/sergio/MacBook-Air-de-Sergio/MRI_Tumor_StyleGAN2/pituitary_model.pkl"
-    }
+    @st.cache_resource
+    def load_model_paths():
+        return {
+            "Glioma": hf_hub_download(
+                repo_id="SergioJaraa/MRI_Tumor_StyleGAN2",
+                filename="network-snapshot-000480.pkl",
+                repo_type="model"
+            ),
+            "Meningioma": hf_hub_download(
+                repo_id="SergioJaraa/MRI_Tumor_StyleGAN2",
+                filename="meningioma_model.pkl",
+                repo_type="model"
+            ),
+            "Pituitary": hf_hub_download(
+                repo_id="SergioJaraa/MRI_Tumor_StyleGAN2",
+                filename="pituitary_model.pkl",
+                repo_type="model"
+            ),
+        }
 
-    st.markdown("<div class='section-title'>🧬 Synthetic MRI Generation</div>", unsafe_allow_html=True)
+    models = load_model_paths()
 
-    for name, url in models.items():
-        if st.button(f"🎲 Generate with {name}"):
-            with st.spinner("Generating image..."):
-                G = load_stylegan_model_local(url)
-                img = generate_image(G)
 
-                st.image(img, caption=f"Generated by {name}", use_column_width=True)
+    model_name = st.selectbox("Select model to generate image", list(models.keys()))
 
-                # Save temporarily for download
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
-                    img.save(tmp.name)
-                    with open(tmp.name, "rb") as file:
-                        btn = st.download_button(
-                            label="⬇️ Download Image",
-                            data=file,
-                            file_name=f"{name.lower().replace(' ', '_')}_generated.png",
-                            mime="image/png",
-                            use_container_width=True
-                        )
+    if st.button("🎲 Generate Image"):
+        with st.spinner("Generating image..."):
+            G = load_stylegan_model_local(models[model_name])
+            img = generate_image(G)
+
+            st.image(img, caption=f"Generated by {model_name}", use_column_width=True)
+
+            # Save temporarily for download
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
+                img.save(tmp.name)
+                with open(tmp.name, "rb") as file:
+                    st.download_button(
+                        label="⬇️ Download Image",
+                        data=file,
+                        file_name=f"{model_name.lower().replace(' ', '_')}_generated.png",
+                        mime="image/png",
+                        use_container_width=True
+                    )
+
+        # Optional: Allow regenerating new image
+        if st.button("🔁 Generate Another Image"):
+            st.rerun()
