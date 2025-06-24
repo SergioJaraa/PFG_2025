@@ -2,17 +2,17 @@ import torch
 import torch.nn as nn
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-from model import Net  # Asegúrate de que esta clase esté definida correctamente
+from model import Net  
 
 # Config
-MODEL_PATH = "federated_model3.pth"       
+MODEL_PATH = "federated_m4.pth"       
 TEST_DATA_PATH = "../Data/Testing"           
-BATCH_SIZE = 32
+BATCH_SIZE = 32 
 IMAGE_SIZE = (256, 256)                  
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Model
-model = Net()                            # Asegúrate que coincida con el modelo usado en federated
+model = Net()                            
 model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
 model.to(DEVICE)
 model.eval()
