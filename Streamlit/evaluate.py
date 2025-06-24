@@ -23,8 +23,8 @@ def preprocess_image(image):
 # Load model
 @torch.no_grad()
 def load_model():
-    model_path = "federated_model3.pth"
-    hf_url = "https://huggingface.co/SergioJaraa/federated_model3/resolve/main/federated_model3.pth"
+    model_path = "federated_m3.pth"
+    hf_url = "https://huggingface.co/SergioJaraa/federated_model3/resolve/main/federated_m3.pth"
 
     # Descargar solo si no existe localmente
     if not os.path.exists(model_path):
