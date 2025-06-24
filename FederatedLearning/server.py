@@ -25,7 +25,7 @@ strategy = SaveModelStrategy()
 # Server
 fl.server.start_server(
     server_address="127.0.0.1:8080",
-    config=fl.server.ServerConfig(num_rounds=60),
+    config=fl.server.ServerConfig(num_rounds=50),
     strategy=strategy
 )
 
@@ -38,5 +38,5 @@ state_dict = {k: torch.tensor(v) for k, v in params_dict}
 model.load_state_dict(state_dict, strict=True)
 
 # Saved to disk
-torch.save(model.state_dict(), "federated_model3.pth")
-print("Saved as 'federated_model3.pth'")
+torch.save(model.state_dict(), "federated_m4.pth")
+print("Saved as 'federated_m4.pth'")
