@@ -14,7 +14,10 @@ import urllib.request
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
-from training import networks
+try:
+    from training import networks
+except ImportError as e:
+    print("Training module could not be imported:", e)
 
 # Debug: Print current working directory
 print("Current working directory:", os.getcwd())
