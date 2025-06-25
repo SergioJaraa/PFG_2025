@@ -14,17 +14,12 @@ import urllib.request
 import sys
 
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
-if base_path not in sys.path:
-    sys.path.insert(0, base_path)
-
 torch_utils_path = os.path.join(base_path, "torch_utils")
-if torch_utils_path not in sys.path:
-    sys.path.insert(0, torch_utils_path)
+training_path = os.path.join(base_path, "training")
 
-try:
-    from training import networks
-except ImportError as e:
-    print("Training module could not be imported:", e)
+for p in [base_path, torch_utils_path, training_path]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 # Initialize session state
 if "step" not in st.session_state:
