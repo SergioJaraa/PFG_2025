@@ -3,6 +3,7 @@ from PIL import Image
 import os
 import tempfile
 import torch
+from training import networks
 import pickle
 import numpy as np
 from evaluate import load_model, preprocess_image, classify_image
@@ -12,7 +13,8 @@ from huggingface_hub import hf_hub_download
 import urllib.request
 import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "stylegan2-ada-pytorch"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
+
 
 # Debug: Print current working directory
 print("Current working directory:", os.getcwd())
@@ -369,6 +371,7 @@ with col2:
     @st.cache_resource
     def load_stylegan_model_local(local_path):
         with open(local_path, "rb") as f:
+            # Load the StyleGAN2 model
             G = pickle.load(f)['G_ema'].to(device)
         return G
 
