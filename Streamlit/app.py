@@ -13,8 +13,10 @@ from huggingface_hub import hf_hub_download
 import urllib.request
 import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
-sys.path.append(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch", "torch_utils"))
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
+sys.path.append(base_path)
+sys.path.append(os.path.join(base_path, "torch_utils"))
+
 try:
     from training import networks
 except ImportError as e:
@@ -372,7 +374,7 @@ with col2:
     # Device configuration (CPU or CUDA)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    @st.cache_resource
+    
     def load_stylegan_model_local(local_path):
         with open(local_path, "rb") as f:
             # Load the StyleGAN2 model
