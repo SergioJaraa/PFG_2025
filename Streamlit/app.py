@@ -14,6 +14,7 @@ import urllib.request
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch", "torch_utils"))
 try:
     from training import networks
 except ImportError as e:
