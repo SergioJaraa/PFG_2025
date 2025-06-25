@@ -3,7 +3,7 @@ from PIL import Image
 import os
 import tempfile
 import torch
-from training import networks
+
 import pickle
 import numpy as np
 from evaluate import load_model, preprocess_image, classify_image
@@ -14,7 +14,7 @@ import urllib.request
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
-
+from training import networks
 
 # Debug: Print current working directory
 print("Current working directory:", os.getcwd())
