@@ -2,10 +2,6 @@ import streamlit as st
 from PIL import Image
 import os
 import sys
-
-
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-
 import tempfile
 import torch
 import pickle
@@ -16,15 +12,8 @@ import pandas as pd
 from huggingface_hub import hf_hub_download
 import urllib.request
 
-# Fix sys.path so pickle.load finds the right modules
-base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
-torch_utils_path = os.path.join(base_path, "torch_utils")
-training_path = os.path.join(base_path, "training")
-for p in [base_path, torch_utils_path, training_path]:
-    if p not in sys.path:
-        sys.path.insert(0, p)
-
-from stylegan2_ada_pytorch.training import networks
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch")))
+from training import networks
 
 
 # Initialize session state
