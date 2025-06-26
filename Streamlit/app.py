@@ -20,10 +20,8 @@ for p in [base_path, torch_utils_path, training_path]:
     if p not in sys.path:
         sys.path.insert(0, p)
 
-try:
-    from training import networks
-except ImportError as e:
-    print("Training module could not be imported:", e)
+from stylegan2_ada_pytorch.training import networks
+
 
 # Initialize session state
 if "step" not in st.session_state:
@@ -372,15 +370,12 @@ with col2:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def load_stylegan_model_local(local_path):
-        # Ensure imports are visible to pickle.load
         import sys, os
         base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
-        training_path = os.path.join(base_path, "training")
         torch_utils_path = os.path.join(base_path, "torch_utils")
-        for p in [base_path, training_path, torch_utils_path]:
-            if p not in sys.path:
-                sys.path.insert(0, p)
-        from training import networks
+        if torch_utils_path not in sys.path:
+            sys.path.insert(0, torch_utils_path)
+        from stylegan2_ada_pytorch.training import networks
         with open(local_path, "rb") as f:
             G = pickle.load(f)['G_ema'].to(device)
         return G
@@ -403,7 +398,12 @@ with col2:
 
     st.markdown("<div style='font-size: 28px; text-align:center; margin-bottom: 10px; padding-top: 20px'>Select model to generate image</div>", unsafe_allow_html=True)
 
-    model_name = st.selectbox("", list(models.keys()))
+    model_name = st.selectbox(
+    "Select GAN model",
+    list(models.keys()),
+    key="gan_model_select",
+    label_visibility="collapsed"
+    )
 
     if st.button("🎲 Generate Image"):
         with st.spinner("Generating image..."):
