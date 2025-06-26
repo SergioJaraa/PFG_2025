@@ -18,19 +18,13 @@ stylegan_path = os.path.join(repo_root, "stylegan2_ada_pytorch")
 sys.path.insert(0, repo_root)
 sys.path.insert(0, stylegan_path)
 
+import register_layers  
+
 print("PYTHONPATH paths:")
 for p in sys.path:
     print(p)
 
 print("Contents of stylegan2_ada_pytorch:", os.listdir(stylegan_path))
-
-from stylegan2_ada_pytorch.training import networks
-from stylegan2_ada_pytorch.training.networks import FullyConnectedLayer
-from stylegan2_ada_pytorch.torch_utils import persistence
-
-persistence.persistent_class(FullyConnectedLayer)
-
-
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
