@@ -20,6 +20,7 @@ for p in sys.path:
 print("Contents of stylegan2_ada_pytorch:", os.listdir(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch")))
 
 from stylegan2_ada_pytorch.training import networks
+from stylegan2_ada_pytorch.training.networks import FullyConnectedLayer
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 repo_root = os.path.dirname(__file__)
@@ -375,8 +376,6 @@ with col2:
 
     def load_stylegan_model_local(local_path):
         print(f"📥 Loading StyleGAN2 model from: {local_path}")
-        
-        from stylegan2_ada_pytorch.training.networks import FullyConnectedLayer
 
         with open(local_path, "rb") as f:
             print("📦 Deserializing model with pickle...")
