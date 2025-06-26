@@ -7,26 +7,31 @@ import tempfile
 import torch
 import pickle
 import numpy as np
-from evaluate import load_model, preprocess_image, classify_image
-import torch.nn.functional as F
 import pandas as pd
+import torch.nn.functional as F
+from evaluate import load_model, preprocess_image, classify_image
 from huggingface_hub import hf_hub_download
 import urllib.request
+
+repo_root = os.path.dirname(__file__)
+stylegan_path = os.path.join(repo_root, "stylegan2_ada_pytorch")
+sys.path.insert(0, repo_root)
+sys.path.insert(0, stylegan_path)
 
 print("PYTHONPATH paths:")
 for p in sys.path:
     print(p)
 
-print("Contents of stylegan2_ada_pytorch:", os.listdir(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch")))
+print("Contents of stylegan2_ada_pytorch:", os.listdir(stylegan_path))
 
 from stylegan2_ada_pytorch.training import networks
 from stylegan2_ada_pytorch.training.networks import FullyConnectedLayer
+from stylegan2_ada_pytorch.torch_utils import persistence
+
+persistence.persistent_class(FullyConnectedLayer)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-repo_root = os.path.dirname(__file__)
-stylegan_path = os.path.join(repo_root, "stylegan2_ada_pytorch")
-sys.path.insert(0, repo_root)
-sys.path.insert(0, stylegan_path)
+
 
 # Initialize session state
 if "step" not in st.session_state:
