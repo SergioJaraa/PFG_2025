@@ -30,6 +30,7 @@ from stylegan2_ada_pytorch.torch_utils import persistence
 
 persistence.persistent_class(FullyConnectedLayer)
 
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 

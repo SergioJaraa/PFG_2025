@@ -21,7 +21,7 @@ import copy
 import uuid
 import types
 import stylegan2_ada_pytorch.dnnlib as dnnlib
-from stylegan2_ada_pytorch.training.networks import FullyConnectedLayer
+# from stylegan2_ada_pytorch.training.networks import FullyConnectedLayer
 
 
 
