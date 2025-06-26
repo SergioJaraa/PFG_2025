@@ -13,7 +13,7 @@ from huggingface_hub import hf_hub_download
 import urllib.request
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2-ada-pytorch")))
-from stylegan2_ada_pytorch.training import networks
+from stylegan2-ada-pytorch.training import networks
 
 
 # Initialize session state
