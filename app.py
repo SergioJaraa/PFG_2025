@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import os
 import sys
+import types
 import tempfile
 import torch
 import pickle
@@ -368,11 +369,18 @@ with col2:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def load_stylegan_model_local(local_path):
-        import sys, os
         base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
         torch_utils_path = os.path.join(base_path, "torch_utils")
-        if torch_utils_path not in sys.path:
-            sys.path.insert(0, torch_utils_path)
+
+        import stylegan2_ada_pytorch.torch_utils as torch_utils
+        sys.modules['torch_utils'] = torch_utils
+
+        import stylegan2_ada_pytorch.torch_utils.ops as torch_utils_ops
+        sys.modules['torch_utils.ops'] = torch_utils_ops
+
+        import stylegan2_ada_pytorch.dnnlib as dnnlib
+        sys.modules['dnnlib'] = dnnlib
+
         from stylegan2_ada_pytorch.training import networks
         with open(local_path, "rb") as f:
             G = pickle.load(f)['G_ema'].to(device)
