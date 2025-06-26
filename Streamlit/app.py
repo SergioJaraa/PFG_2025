@@ -379,10 +379,10 @@ with col2:
 
     def generate_image(G):
         z = torch.randn([1, G.z_dim]).to(device)
-        label = torch.zeros([1, G.c_dim]).to(device)
-        img = G(z, label, truncation_psi=0.5, noise_mode='const')[0]
+        img = G(z, None, truncation_psi=0.5, noise_mode='const')[0]  
         img = (img.permute(1, 2, 0).cpu().numpy() * 127.5 + 127.5).clip(0, 255).astype(np.uint8)
         return Image.fromarray(img)
+
 
     @st.cache_resource
     def load_model_paths():
