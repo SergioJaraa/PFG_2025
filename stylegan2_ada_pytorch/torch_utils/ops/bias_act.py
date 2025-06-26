@@ -12,7 +12,7 @@ import os
 import warnings
 import numpy as np
 import torch
-from .. import dnnlib
+from ... import dnnlib
 
 import traceback
 
