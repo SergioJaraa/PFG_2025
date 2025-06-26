@@ -12,7 +12,8 @@ import os
 import warnings
 import numpy as np
 import torch
-from ... import dnnlib
+import stylegan2_ada_pytorch.dnnlib as dnnlib
+
 
 import traceback
 

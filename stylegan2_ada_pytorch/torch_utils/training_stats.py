@@ -14,7 +14,8 @@ code."""
 import re
 import numpy as np
 import torch
-from .. import dnnlib
+import stylegan2_ada_pytorch.dnnlib as dnnlib
+
 
 
 from . import misc
