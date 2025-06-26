@@ -22,6 +22,10 @@ print("Contents of stylegan2_ada_pytorch:", os.listdir(os.path.join(os.path.dirn
 from stylegan2_ada_pytorch.training import networks
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+repo_root = os.path.dirname(__file__)
+stylegan_path = os.path.join(repo_root, "stylegan2_ada_pytorch")
+sys.path.insert(0, repo_root)
+sys.path.insert(0, stylegan_path)
 
 # Initialize session state
 if "step" not in st.session_state:
