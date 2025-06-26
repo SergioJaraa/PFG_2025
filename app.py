@@ -21,6 +21,7 @@ print("Contents of stylegan2_ada_pytorch:", os.listdir(os.path.join(os.path.dirn
 
 from stylegan2_ada_pytorch.training import networks
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Initialize session state
 if "step" not in st.session_state:
@@ -369,28 +370,27 @@ with col2:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def load_stylegan_model_local(local_path):
-        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
-        torch_utils_path = os.path.join(base_path, "torch_utils")
-
-        import stylegan2_ada_pytorch.torch_utils as torch_utils
-        sys.modules['torch_utils'] = torch_utils
-
-        import stylegan2_ada_pytorch.torch_utils.ops as torch_utils_ops
-        sys.modules['torch_utils.ops'] = torch_utils_ops
-
-        import stylegan2_ada_pytorch.dnnlib as dnnlib
-        sys.modules['dnnlib'] = dnnlib
-
+        print(f"📥 Loading StyleGAN2 model from: {local_path}")
+        torch_utils_path = os.path.join(os.path.dirname(__file__), 'stylegan2_ada_pytorch')
+        sys.path.insert(0, torch_utils_path)
+        
         from stylegan2_ada_pytorch.training import networks
+        
         with open(local_path, "rb") as f:
+            print("📦 Deserializing model with pickle...")
             G = pickle.load(f)['G_ema'].to(device)
+            print("✅ Model loaded and moved to device.")
+            
         return G
 
     def generate_image(G):
-        z = torch.randn([1, G.z_dim]).to(device)
-        img = G(z, None, truncation_psi=0.5, noise_mode='const')[0]
-        img = (img.permute(1, 2, 0).cpu().numpy() * 127.5 + 127.5).clip(0, 255).astype(np.uint8)
-        return Image.fromarray(img)
+        print("🎨 Generating image...")
+        z = torch.randn([1, G.z_dim], device=device)
+        c = None
+        img = G(z, c)
+        print("✅ Image generated.")
+        return img
+
 
     @st.cache_resource
     def load_model_paths():
