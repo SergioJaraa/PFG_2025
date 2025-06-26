@@ -375,22 +375,20 @@ with col2:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def load_stylegan_model_local(local_path):
-        print(f"📥 Loading StyleGAN2 model from: {local_path}")
-
+        print("📥 Loading StyleGAN2 model from:", local_path)
         with open(local_path, "rb") as f:
-            print("📦 Deserializing model with pickle...")
-            G = pickle.load(f)['G_ema'].to(device)
-            print("✅ Model loaded and moved to device.")
-            
+            print("📦 Deserializing model...")
+            G = pickle.load(f)["G_ema"].to(device)
+            print("✅ Model loaded.")
         return G
 
     def generate_image(G):
         print("🎨 Generating image...")
         z = torch.randn([1, G.z_dim], device=device)
-        c = None
-        img = G(z, c)
-        print("✅ Image generated.")
+        img = G(z, None)
+        print("✅ Image generated. Shape:", img.shape)
         return img
+
 
 
     @st.cache_resource
