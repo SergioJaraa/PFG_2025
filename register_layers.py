@@ -1,0 +1,5 @@
+# register_layers.py
+from stylegan2_ada_pytorch.training.networks import FullyConnectedLayer
+from stylegan2_ada_pytorch.torch_utils import persistence
+
+persistence.persistent_class(FullyConnectedLayer)
