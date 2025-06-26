@@ -11,7 +11,8 @@ import contextlib
 import numpy as np
 import torch
 import warnings
-from .. import dnnlib
+import stylegan2_ada_pytorch.dnnlib as dnnlib
+
 
 
 #----------------------------------------------------------------------------
