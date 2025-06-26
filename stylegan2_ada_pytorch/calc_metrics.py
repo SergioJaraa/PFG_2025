@@ -14,7 +14,8 @@ import json
 import tempfile
 import copy
 import torch
-import dnnlib
+from .. import dnnlib
+
 
 import legacy
 from metrics import metric_main

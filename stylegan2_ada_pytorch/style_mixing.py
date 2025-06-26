@@ -13,7 +13,8 @@ import re
 from typing import List
 
 import click
-import dnnlib
+from .. import dnnlib
+
 import numpy as np
 import PIL.Image
 import torch

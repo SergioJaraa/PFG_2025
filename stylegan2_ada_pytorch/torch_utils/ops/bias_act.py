@@ -12,7 +12,8 @@ import os
 import warnings
 import numpy as np
 import torch
-import dnnlib
+from .. import dnnlib
+
 import traceback
 
 from .. import custom_ops

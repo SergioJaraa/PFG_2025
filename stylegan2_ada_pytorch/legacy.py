@@ -12,7 +12,8 @@ import re
 import copy
 import numpy as np
 import torch
-import dnnlib
+from .. import dnnlib
+
 from torch_utils import misc
 
 #----------------------------------------------------------------------------

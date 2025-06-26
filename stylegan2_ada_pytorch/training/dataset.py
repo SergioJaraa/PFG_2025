@@ -12,7 +12,8 @@ import zipfile
 import PIL.Image
 import json
 import torch
-import dnnlib
+from .. import dnnlib
+
 
 try:
     import pyspng
