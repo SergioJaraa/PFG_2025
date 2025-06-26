@@ -1,6 +1,11 @@
 import streamlit as st
 from PIL import Image
 import os
+import sys
+
+
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
 import tempfile
 import torch
 import pickle
@@ -10,7 +15,6 @@ import torch.nn.functional as F
 import pandas as pd
 from huggingface_hub import hf_hub_download
 import urllib.request
-import sys
 
 # Fix sys.path so pickle.load finds the right modules
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
