@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Optional: ensure compatibility with GPU architecture (e.g., Turing: 7.5 for RTX 2060)
+# Ensuring compatibility with GPU architecture (e.g., Turing: 7.5 for RTX 2060)
 ENV TORCH_CUDA_ARCH_LIST="7.5"
 
 # Install Python dependencies
