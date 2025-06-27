@@ -2,18 +2,30 @@ import streamlit as st
 from PIL import Image
 import os
 import sys
+import types
 import tempfile
 import torch
 import pickle
 import numpy as np
-from evaluate import load_model, preprocess_image, classify_image
-import torch.nn.functional as F
 import pandas as pd
+import torch.nn.functional as F
+from evaluate import load_model, preprocess_image, classify_image
 from huggingface_hub import hf_hub_download
 import urllib.request
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch")))
-from training import networks
+repo_root = os.path.dirname(__file__)
+stylegan_path = os.path.join(repo_root, "stylegan2_ada_pytorch")
+sys.path.insert(0, repo_root)
+sys.path.insert(0, stylegan_path)
+
+import register_layers  
+
+print("PYTHONPATH paths:")
+for p in sys.path:
+    print(p)
+
+print("Contents of stylegan2_ada_pytorch:", os.listdir(stylegan_path))
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 # Initialize session state
@@ -363,21 +375,21 @@ with col2:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def load_stylegan_model_local(local_path):
-        import sys, os
-        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "stylegan2_ada_pytorch"))
-        torch_utils_path = os.path.join(base_path, "torch_utils")
-        if torch_utils_path not in sys.path:
-            sys.path.insert(0, torch_utils_path)
-        from stylegan2_ada_pytorch.training import networks
+        print("📥 Loading StyleGAN2 model from:", local_path)
         with open(local_path, "rb") as f:
-            G = pickle.load(f)['G_ema'].to(device)
+            print("📦 Deserializing model...")
+            G = pickle.load(f)["G_ema"].to(device)
+            print("✅ Model loaded.")
         return G
 
     def generate_image(G):
-        z = torch.randn([1, G.z_dim]).to(device)
-        img = G(z, None, truncation_psi=0.5, noise_mode='const')[0]
-        img = (img.permute(1, 2, 0).cpu().numpy() * 127.5 + 127.5).clip(0, 255).astype(np.uint8)
-        return Image.fromarray(img)
+        print("🎨 Generating image...")
+        z = torch.randn([1, G.z_dim], device=device)
+        img = G(z, None)
+        print("✅ Image generated. Shape:", img.shape)
+        return img
+
+
 
     @st.cache_resource
     def load_model_paths():
