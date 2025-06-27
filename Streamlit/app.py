@@ -398,7 +398,6 @@ with col2:
 
 
 
-    @st.cache_resource
     def generate_image(_G):
         _G = _G.to("cuda")
         with torch.no_grad():
